@@ -23,17 +23,9 @@ class Text extends Component<*> {
 
   static propTypes = TextPropTypes;
 
-  static childContextTypes = {
-    isInAParentText: bool
-  };
+  static ParentContext = React.createContext(false);
 
-  static contextTypes = {
-    isInAParentText: bool
-  };
-
-  getChildContext() {
-    return { isInAParentText: true };
-  }
+  static contextType = Text.ParentContext;
 
   render() {
     const {
@@ -59,7 +51,7 @@ class Text extends Component<*> {
       ...otherProps
     } = this.props;
 
-    const { isInAParentText } = this.context;
+    const isInAParentText = this.context;
 
     if (process.env.NODE_ENV !== 'production') {
       warning(this.props.className == null, 'Using the "className" prop on <Text> is deprecated.');
@@ -74,7 +66,7 @@ class Text extends Component<*> {
     otherProps.classList = [
       this.props.className,
       classes.text,
-      this.context.isInAParentText === true && classes.textHasAncestor,
+      isInAParentText === true && classes.textHasAncestor,
       numberOfLines === 1 && classes.textOneLine,
       numberOfLines > 1 && classes.textMultiLine
     ];
@@ -89,7 +81,11 @@ class Text extends Component<*> {
 
     const component = isInAParentText ? 'span' : 'div';
 
-    return createElement(component, otherProps);
+    return (
+      <Text.ParentContext.Provider value={true}>
+        {createElement(component, otherProps)}
+      </Text.ParentContext.Provider>
+    );
   }
 
   _createEnterHandler(fn) {

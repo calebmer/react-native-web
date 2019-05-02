@@ -24,6 +24,7 @@ import View from '../View';
 import ViewPropTypes from '../ViewPropTypes';
 import { bool, func, number, oneOf, shape } from 'prop-types';
 import React, { Component } from 'react';
+import Text from '../Text';
 
 const emptyObject = {};
 
@@ -97,9 +98,7 @@ type State = {
 class Image extends Component<*, State> {
   static displayName = 'Image';
 
-  static contextTypes = {
-    isInAParentText: bool
-  };
+  static contextType = Text.ParentContext;
 
   static propTypes = {
     ...ViewPropTypes,
@@ -203,6 +202,8 @@ class Image extends Component<*, State> {
       ...other
     } = this.props;
 
+    const isInAParentText = this.context;
+
     if (process.env.NODE_ENV !== 'production') {
       if (this.props.src) {
         console.warn('The <Image> component requires a `source` property rather than `src`.');
@@ -268,12 +269,7 @@ class Image extends Component<*, State> {
         accessibilityLabel={accessibilityLabel}
         accessible={accessible}
         onLayout={this._createLayoutHandler(finalResizeMode)}
-        style={[
-          styles.root,
-          this.context.isInAParentText && styles.inline,
-          imageSizeStyle,
-          flatStyle
-        ]}
+        style={[styles.root, isInAParentText && styles.inline, imageSizeStyle, flatStyle]}
         testID={testID}
       >
         <View
