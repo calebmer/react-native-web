@@ -129,7 +129,7 @@ const TouchableHighlight = createReactClass({
     ensureComponentIsNative(this._childRef);
   },
 
-  componentWillReceiveProps: function(nextProps) {
+  UNSAFE_componentWillReceiveProps: function(nextProps) {
     ensurePositiveDelayProps(nextProps);
     if (
       nextProps.activeOpacity !== this.props.activeOpacity ||

@@ -99,7 +99,7 @@ const TouchableWithoutFeedback = createReactClass({
     ensurePositiveDelayProps(this.props);
   },
 
-  componentWillReceiveProps: function(nextProps: Object) {
+  UNSAFE_componentWillReceiveProps: function(nextProps: Object) {
     ensurePositiveDelayProps(nextProps);
   },
 
