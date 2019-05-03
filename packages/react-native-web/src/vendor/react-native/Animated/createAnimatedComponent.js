@@ -47,10 +47,6 @@ function createAnimatedComponent(Component: any): any {
       this._component.setNativeProps(props);
     }
 
-    UNSAFE_componentWillMount() {
-      this._attachProps(this.props);
-    }
-
     componentDidMount() {
       if (this._invokeAnimatedPropsCallbackOnMount) {
         this._invokeAnimatedPropsCallbackOnMount = false;
@@ -132,10 +128,6 @@ function createAnimatedComponent(Component: any): any {
       oldPropsAnimated && oldPropsAnimated.__detach();
     }
 
-    UNSAFE_componentWillReceiveProps(newProps) {
-      this._attachProps(newProps);
-    }
-
     componentDidUpdate(prevProps) {
       if (this._component !== this._prevComponent) {
         this._propsAnimated.setNativeView(this._component);
@@ -147,6 +139,8 @@ function createAnimatedComponent(Component: any): any {
     }
 
     render() {
+      this._attachProps(this.props);
+
       const props = this._propsAnimated.__getValue();
       return (
         <Component

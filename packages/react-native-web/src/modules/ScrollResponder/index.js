@@ -485,20 +485,8 @@ const ScrollResponderMixin = {
     console.error('Error measuring text field: ', e);
   },
 
-  /**
-   * `componentWillMount` is the closest thing to a  standard "constructor" for
-   * React components.
-   *
-   * The `keyboardWillShow` is called before input focus.
-   */
-  UNSAFE_componentWillMount: function() {
-    this.keyboardWillOpenTo = null;
-    this.additionalScrollOffset = 0;
-    // this.addListenerOn(RCTDeviceEventEmitter, 'keyboardWillShow', this.scrollResponderKeyboardWillShow);
-    // this.addListenerOn(RCTDeviceEventEmitter, 'keyboardWillHide', this.scrollResponderKeyboardWillHide);
-    // this.addListenerOn(RCTDeviceEventEmitter, 'keyboardDidShow', this.scrollResponderKeyboardDidShow);
-    // this.addListenerOn(RCTDeviceEventEmitter, 'keyboardDidHide', this.scrollResponderKeyboardDidHide);
-  },
+  keyboardWillOpenTo: null,
+  additionalScrollOffset: 0,
 
   /**
    * Warning, this may be called several times for a single keyboard opening.
