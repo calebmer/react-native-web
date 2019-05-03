@@ -73,14 +73,6 @@ const TouchableOpacity = createReactClass({
     return this.touchableGetInitialState();
   },
 
-  componentDidMount: function() {
-    ensurePositiveDelayProps(this.props);
-  },
-
-  UNSAFE_componentWillReceiveProps: function(nextProps) {
-    ensurePositiveDelayProps(nextProps);
-  },
-
   /**
    * Animate the touchable to a new opacity.
    */
@@ -157,6 +149,8 @@ const TouchableOpacity = createReactClass({
   },
 
   render: function() {
+    ensurePositiveDelayProps(this.props);
+
     const {
       /* eslint-disable */
       activeOpacity,

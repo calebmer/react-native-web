@@ -95,14 +95,6 @@ const TouchableWithoutFeedback = createReactClass({
     return this.touchableGetInitialState();
   },
 
-  componentDidMount: function() {
-    ensurePositiveDelayProps(this.props);
-  },
-
-  UNSAFE_componentWillReceiveProps: function(nextProps: Object) {
-    ensurePositiveDelayProps(nextProps);
-  },
-
   /**
    * `Touchable.Mixin` self callbacks. The mixin will invoke these if they are
    * defined on your component.
@@ -144,6 +136,8 @@ const TouchableWithoutFeedback = createReactClass({
   },
 
   render: function(): Element<any> {
+    ensurePositiveDelayProps(this.props);
+
     const {
       /* eslint-disable */
       delayLongPress,

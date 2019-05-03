@@ -414,27 +414,6 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props<ItemT>) {
-    invariant(
-      nextProps.numColumns === this.props.numColumns,
-      'Changing numColumns on the fly is not supported. Change the key prop on FlatList when ' +
-        'changing the number of columns to force a fresh render of the component.',
-    );
-    invariant(
-      nextProps.onViewableItemsChanged === this.props.onViewableItemsChanged,
-      'Changing onViewableItemsChanged on the fly is not supported',
-    );
-    invariant(
-      nextProps.viewabilityConfig === this.props.viewabilityConfig,
-      'Changing viewabilityConfig on the fly is not supported',
-    );
-    invariant(
-      nextProps.viewabilityConfigCallbackPairs ===
-        this.props.viewabilityConfigCallbackPairs,
-      'Changing viewabilityConfigCallbackPairs on the fly is not supported',
-    );
-  }
-
   constructor(props: Props<*>) {
     super(props);
     if (this.props.viewabilityConfigCallbackPairs) {

@@ -397,19 +397,9 @@ class ItemWithSeparator extends React.Component<
   state = {
     separatorProps: {
       highlighted: false,
-      leadingItem: this.props.item,
-      leadingSection: this.props.leadingSection,
-      section: this.props.section,
-      trailingItem: this.props.trailingItem,
-      trailingSection: this.props.trailingSection,
     },
     leadingSeparatorProps: {
       highlighted: false,
-      leadingItem: this.props.leadingItem,
-      leadingSection: this.props.leadingSection,
-      section: this.props.section,
-      trailingItem: this.props.item,
-      trailingSection: this.props.trailingSection,
     },
   };
 
@@ -439,27 +429,6 @@ class ItemWithSeparator extends React.Component<
     },
   };
 
-  UNSAFE_componentWillReceiveProps(props: ItemWithSeparatorProps) {
-    this.setState(state => ({
-      separatorProps: {
-        ...this.state.separatorProps,
-        leadingItem: props.item,
-        leadingSection: props.leadingSection,
-        section: props.section,
-        trailingItem: props.trailingItem,
-        trailingSection: props.trailingSection,
-      },
-      leadingSeparatorProps: {
-        ...this.state.leadingSeparatorProps,
-        leadingItem: props.leadingItem,
-        leadingSection: props.leadingSection,
-        section: props.section,
-        trailingItem: props.item,
-        trailingSection: props.trailingSection,
-      },
-    }));
-  }
-
   updateSeparatorProps(newProps: Object) {
     this.setState(state => ({
       separatorProps: {...state.separatorProps, ...newProps},
@@ -481,10 +450,24 @@ class ItemWithSeparator extends React.Component<
       separators: this._separators,
     });
     const leadingSeparator = LeadingSeparatorComponent && (
-      <LeadingSeparatorComponent {...this.state.leadingSeparatorProps} />
+      <LeadingSeparatorComponent
+        {...this.state.leadingSeparatorProps}
+        leadingItem={this.props.leadingItem}
+        leadingSection={this.props.leadingSection}
+        section={this.props.section}
+        trailingItem={this.props.item}
+        trailingSection={this.props.trailingSection}
+      />
     );
     const separator = SeparatorComponent && (
-      <SeparatorComponent {...this.state.separatorProps} />
+      <SeparatorComponent
+        {...this.state.separatorProps}
+        leadingItem={this.props.item}
+        leadingSection={this.props.leadingSection}
+        section={this.props.section}
+        trailingItem={this.props.trailingItem}
+        trailingSection={this.props.trailingSection}
+      />
     );
     return leadingSeparator || separator ? (
       <View>
