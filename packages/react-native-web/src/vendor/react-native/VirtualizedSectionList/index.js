@@ -119,7 +119,6 @@ export type Props<SectionT> = RequiredProps<SectionT> &
 type DefaultProps = typeof VirtualizedList.defaultProps & {
   data: $ReadOnlyArray<Item>,
 };
-type State = {childProps: VirtualizedListProps};
 
 /**
  * Right now this just flattens everything into one list and uses VirtualizedList under the
@@ -128,11 +127,8 @@ type State = {childProps: VirtualizedListProps};
  */
 class VirtualizedSectionList<SectionT: SectionBase> extends React.PureComponent<
   Props<SectionT>,
-  State,
 > {
   props: Props<SectionT>;
-
-  state: State;
 
   static defaultProps: DefaultProps = {
     ...VirtualizedList.defaultProps,
@@ -322,45 +318,35 @@ class VirtualizedSectionList<SectionT: SectionBase> extends React.PureComponent<
     return null;
   }
 
-  _computeState(props: Props<SectionT>): State {
-    const offset = props.ListHeaderComponent ? 1 : 0;
+  render() {
+    const offset = this.props.ListHeaderComponent ? 1 : 0;
     const stickyHeaderIndices = [];
-    const itemCount = props.sections.reduce((v, section) => {
+    const itemCount = this.props.sections.reduce((v, section) => {
       stickyHeaderIndices.push(v + offset);
       return v + section.data.length + 2; // Add two for the section header and footer.
     }, 0);
 
-    return {
-      childProps: {
-        ...props,
-        renderItem: this._renderItem,
-        ItemSeparatorComponent: undefined, // Rendered with renderItem
-        data: props.sections,
-        getItemCount: () => itemCount,
-        getItem,
-        keyExtractor: this._keyExtractor,
-        onViewableItemsChanged: props.onViewableItemsChanged
-          ? this._onViewableItemsChanged
-          : undefined,
-        stickyHeaderIndices: props.stickySectionHeadersEnabled
-          ? stickyHeaderIndices
-          : undefined,
-      },
-    };
-  }
-
-  constructor(props: Props<SectionT>, context: Object) {
-    super(props, context);
-    this.state = this._computeState(props);
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps: Props<SectionT>) {
-    this.setState(this._computeState(nextProps));
-  }
-
-  render() {
     return (
-      <VirtualizedList {...this.state.childProps} ref={this._captureRef} />
+      <VirtualizedList
+        {...this.props}
+        ref={this._captureRef}
+        renderItem={this._renderItem}
+        ItemSeparatorComponent={undefined} // Rendered with renderItem
+        data={this.props.sections}
+        getItemCount={() => itemCount}
+        getItem={getItem}
+        keyExtractor={this._keyExtractor}
+        onViewableItemsChanged={
+          this.props.onViewableItemsChanged
+            ? this._onViewableItemsChanged
+            : undefined
+        }
+        stickyHeaderIndices={
+          this.props.stickySectionHeadersEnabled
+            ? stickyHeaderIndices
+            : undefined
+        }
+      />
     );
   }
 
