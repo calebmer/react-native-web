@@ -41,6 +41,16 @@ export default class ViewOnLayoutExample extends React.Component {
         <View style={styles.right}>
           <View ref={this._setRef} style={styles.container}>
             <View onLayout={this._handleLayout} style={styles.box} />
+            <View
+              style={{
+                position: 'absolute',
+                left: x,
+                top: y,
+                width,
+                height,
+                backgroundColor: '#eee'
+              }}
+            />
           </View>
         </View>
       </View>
@@ -70,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   box: {
-    backgroundColor: '#eee',
+    backgroundColor: 'red', // If you see a red flash then that means layout is firing after paint!
     flex: 1
   }
 });

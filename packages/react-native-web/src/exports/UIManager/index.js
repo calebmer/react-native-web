@@ -23,13 +23,24 @@ const getRect = node => {
 const measureLayout = (node, relativeToNativeNode, callback) => {
   const relativeNode = relativeToNativeNode || (node && node.parentNode);
   if (node && relativeNode) {
-    setTimeout(() => {
+    // `Promise.resolve()` schedules the function to run as a part of the
+    // “microtask queue”. The microtask queue is special since, unlike
+    // `setTimeout`, it will always run before a browser paint. That means if
+    // the callback triggers a React re-render the browser will not paint an
+    // intermediate state causing a brief flash.
+    //
+    // I (@calebmer) don’t think it’s possible to avoid the intermediate
+    // rendering in React Native for iOS and Android.
+    //
+    // See the commit this comment was added in with `git blame` for an example
+    // that will break if we use `setTimeout` here instead.
+    Promise.resolve().then(() => {
       const relativeRect = getBoundingClientRect(relativeNode);
       const { height, left, top, width } = getRect(node);
       const x = left - relativeRect.left;
       const y = top - relativeRect.top;
       callback(x, y, width, height, left, top);
-    }, 0);
+    });
   }
 };
 
