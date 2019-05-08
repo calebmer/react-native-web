@@ -13,7 +13,7 @@ module.exports = storybookBaseConfig => {
   storybookBaseConfig.resolve.extensions = ['.web.js', '.js', '.json', '.web.jsx', '.jsx'];
 
   storybookBaseConfig.resolve.alias = {
-    'react-native': 'react-native-web'
+    'react-native': '@calebmer/react-native-web'
   };
 
   return storybookBaseConfig;
