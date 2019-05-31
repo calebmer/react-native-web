@@ -310,6 +310,7 @@ const ScrollView = createReactClass({
     const nextScrollTop = element.scrollHeight - element.clientHeight - lastScrollBottom;
 
     element.scrollTop = nextScrollTop;
+    this._lastScrollTop = nextScrollTop;
   },
 
   _handleScroll(e: Object) {
