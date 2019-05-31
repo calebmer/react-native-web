@@ -7,6 +7,7 @@
 import { HorizontalExample } from './examples/Horizontal';
 import ScrollToExample from './examples/ScrollTo';
 import ScrollToEndExample from './examples/ScrollToEnd';
+import PinWindowTo from './examples/PinWindowTo';
 import React from 'react';
 import UIExplorer, {
   AppText,
@@ -133,11 +134,28 @@ const ScrollViewScreen = () => (
         description={
           <AppText>
             An array of child indices determining which children get docked to the top of the screen
-            when scrolling. For example, passing stickyHeaderIndices={[0]} will cause the first
+            when scrolling. For example, passing stickyHeaderIndices={'{[0]}'} will cause the first
             child to be fixed to the top of the scroll view. This property is not supported in
-            conjunction with horizontal={true}.
+            conjunction with horizontal={'{true}'}.
           </AppText>
         }
+      />
+
+      <DocItem
+        name="pinWindowTo"
+        typeInfo="?enum('top', 'bottom')"
+        description={
+          <AppText>
+            Pins the currently scrolled window to either the top of its content or the bottom. The
+            default behavior is "top". That means when the content in the scroll view changes we
+            will keep the offset of the scroll view from the top of the content the same. If we set
+            this prop to "bottom" then when the content of the scroll view changes we will keep the
+            offset from the bottom of the content the same.
+          </AppText>
+        }
+        example={{
+          render: () => <PinWindowTo />
+        }}
       />
     </Section>
 

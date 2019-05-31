@@ -32,6 +32,7 @@ const ScrollView = createReactClass({
     onContentSizeChange: func,
     onScroll: func,
     pagingEnabled: bool,
+    pinWindowTo: oneOf(['top', 'bottom']),
     refreshControl: element,
     scrollEnabled: bool,
     scrollEventThrottle: number,
@@ -43,6 +44,24 @@ const ScrollView = createReactClass({
 
   getInitialState() {
     return this.scrollResponderMixinGetInitialState();
+  },
+
+  componentDidMount() {
+    if (this.props.pinWindowTo === 'bottom') {
+      const element = this.getScrollableNode();
+      this._lastScrollTop = element.scrollTop;
+      this._lastScrollHeight = element.scrollHeight;
+      this._lastClientHeight = element.clientHeight;
+    }
+  },
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.pinWindowTo !== 'bottom' && this.props.pinWindowTo === 'bottom') {
+      const element = this.getScrollableNode();
+      this._lastScrollTop = element.scrollTop;
+      this._lastScrollHeight = element.scrollHeight;
+      this._lastClientHeight = element.clientHeight;
+    }
   },
 
   flashScrollIndicators() {
@@ -138,6 +157,7 @@ const ScrollView = createReactClass({
       refreshControl,
       stickyHeaderIndices,
       pagingEnabled,
+      pinWindowTo,
       /* eslint-disable */
       keyboardDismissMode,
       onScroll,
@@ -158,9 +178,9 @@ const ScrollView = createReactClass({
     }
 
     let contentSizeChangeProps = {};
-    if (onContentSizeChange) {
+    if (onContentSizeChange || pinWindowTo === 'bottom') {
       contentSizeChangeProps = {
-        onLayout: this._handleContentOnLayout
+        onLayout: this._handleContentLayout
       };
     }
 
@@ -225,6 +245,10 @@ const ScrollView = createReactClass({
       onResponderReject: this.scrollResponderHandleResponderReject
     };
 
+    if (pinWindowTo === 'bottom') {
+      props.onLayout = this._handleLayout;
+    }
+
     const ScrollViewClass = ScrollViewBase;
 
     invariant(ScrollViewClass !== undefined, 'ScrollViewClass must not be undefined');
@@ -246,9 +270,46 @@ const ScrollView = createReactClass({
     );
   },
 
-  _handleContentOnLayout(e: Object) {
-    const { width, height } = e.nativeEvent.layout;
-    this.props.onContentSizeChange(width, height);
+  _handleLayout(e: Object) {
+    const { onLayout, pinWindowTo } = this.props;
+
+    if (pinWindowTo === 'bottom') {
+      this._pinWindowToBottom();
+    }
+
+    if (onLayout) {
+      onLayout(e);
+    }
+  },
+
+  _handleContentLayout(e: Object) {
+    const { onContentSizeChange, pinWindowTo } = this.props;
+
+    if (pinWindowTo === 'bottom') {
+      this._pinWindowToBottom();
+    }
+
+    if (onContentSizeChange) {
+      const { width, height } = e.nativeEvent.layout;
+      onContentSizeChange(width, height);
+    }
+  },
+
+  _pinWindowToBottom() {
+    const element = this.getScrollableNode();
+
+    const lastScrollTop = this._lastScrollTop;
+
+    const lastScrollHeight = this._lastScrollHeight;
+    this._lastScrollHeight = element.scrollHeight;
+
+    const lastClientHeight = this._lastClientHeight;
+    this._lastClientHeight = element.clientHeight;
+
+    const lastScrollBottom = lastScrollHeight - (lastScrollTop + lastClientHeight);
+    const nextScrollTop = element.scrollHeight - element.clientHeight - lastScrollBottom;
+
+    element.scrollTop = nextScrollTop;
   },
 
   _handleScroll(e: Object) {
@@ -262,6 +323,11 @@ const ScrollView = createReactClass({
             'much precision.'
         );
       }
+    }
+
+    if (this.props.pinWindowTo === 'bottom') {
+      const element = this.getScrollableNode();
+      this._lastScrollTop = element.scrollTop;
     }
 
     if (this.props.keyboardDismissMode === 'on-drag') {
